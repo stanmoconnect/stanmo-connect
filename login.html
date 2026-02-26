@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — Stanmo Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #F47B20;
+      --dark: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+    }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--orange);
+      text-decoration: none;
+      margin-bottom: 2rem;
+      display: block;
+      text-align: center;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 420px;
+    }
+    h1 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; }
+    input {
+      width: 100%;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--orange); }
+    .btn {
+      width: 100%;
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .signup-link { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); }
+    .signup-link a { color: var(--orange); text-decoration: none; }
+    .error-msg {
+      background: rgba(255,80,80,0.1);
+      border: 1px solid rgba(255,80,80,0.3);
+      color: #ff6b6b;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="logo" href="index.html">SC STANMO CONNECT</a>
+
+  <div class="card">
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Sign in to your Stanmo Connect account.</p>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Your password" required />
+      </div>
+      <button class="btn" type="submit" id="submit-btn">Sign In →</button>
+    </form>
+
+    <div class="signup-link">
+      Don't have an account? <a href="signup.html">Sign up</a>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCckKrwsUd9oyHh_w5E06S5fVYCgEDhHeA",
+    authDomain: "stanmo-connect.firebaseapp.com",
+    projectId: "stanmo-connect",
+    storageBucket: "stanmo-connect.firebasestorage.app",
+    messagingSenderId: "1030645380559",
+    appId: "1:1030645380559:web:8b1385e0b6f2d90badceba"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const errorMsg = document.getElementById('error-msg');
+    errorMsg.style.display = 'none';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const uid = userCred.user.uid;
+      const userDoc = await getDoc(doc(db, 'users', uid));
+
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        if (data.role === 'admin') {
+          window.location.href = 'dashboard-admin.html';
+        } else if (data.role === 'provider') {
+          window.location.href = 'dashboard-provider.html';
+        } else {
+          window.location.href = 'dashboard-requester.html';
+        }
+      }
+    } catch (err) {
+      let msg = 'Something went wrong. Please try again.';
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') msg = 'Incorrect email or password.';
+      if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Please try again later.';
+      errorMsg.textContent = msg;
+      errorMsg.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In →';
+    }
+  });
+</script>
+</body>
+</html>

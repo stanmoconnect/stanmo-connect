@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Dashboard — Stanmo Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #F47B20;
+      --dark: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --blue: #388bfd;
+    }
+    body { background: var(--dark); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+    /* Nav */
+    nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--orange); font-size: 1.2rem; text-decoration: none; }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-name { font-size: 0.85rem; color: var(--muted); }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    main { padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .welcome-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; }
+    .stat-value.orange { color: var(--orange); }
+    .stat-value.green { color: var(--green); }
+    .stat-value.blue { color: var(--blue); }
+
+    /* Section */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      margin-top: 2rem;
+    }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .btn-primary {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: 'Syne', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    /* Job cards */
+    .job-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .job-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .job-title { font-weight: 600; font-size: 0.95rem; }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.7rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge-pending { background: rgba(210,153,34,0.15); color: var(--yellow); }
+    .badge-quoted { background: rgba(56,139,253,0.15); color: var(--blue); }
+    .badge-active { background: rgba(244,123,32,0.15); color: var(--orange); }
+    .badge-completed { background: rgba(63,185,80,0.15); color: var(--green); }
+
+    .job-meta { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.5rem; }
+    .job-meta span { margin-right: 1rem; }
+
+    .quote-box {
+      background: rgba(56,139,253,0.08);
+      border: 1px solid rgba(56,139,253,0.2);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-top: 0.75rem;
+    }
+    .quote-box .quote-label { font-size: 0.75rem; color: var(--blue); font-weight: 600; margin-bottom: 0.3rem; }
+    .quote-box .quote-amount { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text); }
+    .quote-box .quote-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+    .job-actions { display: flex; gap: 0.75rem; margin-top: 1rem; }
+    .btn-accept {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-pay {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-confirm {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.55rem 1rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty-state p { font-size: 0.9rem; margin-bottom: 1rem; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+    }
+    .modal h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 1.25rem; }
+    .modal .form-group { margin-bottom: 1rem; }
+    .modal label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.4rem; }
+    .modal input, .modal select, .modal textarea {
+      width: 100%;
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+    }
+    .modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--orange); }
+    .modal textarea { resize: vertical; min-height: 80px; }
+    .modal select option { background: var(--dark); }
+    .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    .modal-actions .btn-primary { flex: 1; text-align: center; padding: 0.75rem; }
+    .modal-actions .btn-outline { flex: 1; text-align: center; padding: 0.75rem; }
+
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stats .stat-card:last-child { grid-column: span 2; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">SC STANMO CONNECT</a>
+  <div class="nav-right">
+    <span class="nav-name" id="nav-name">Loading...</span>
+    <button class="btn-logout" id="logout-btn">Logout</button>
+  </div>
+</nav>
+
+<main>
+  <h1 id="welcome-title">Welcome back 👋</h1>
+  <p class="welcome-sub">Manage your service requests and track your jobs.</p>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Requests</div>
+      <div class="stat-value orange" id="stat-total">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Active Jobs</div>
+      <div class="stat-value blue" id="stat-active">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Completed</div>
+      <div class="stat-value green" id="stat-completed">0</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <span class="section-title">My Requests</span>
+    <button class="btn-primary" onclick="openNewRequestModal()">+ New Request</button>
+  </div>
+
+  <div id="jobs-container">
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <p>No requests yet. Click "New Request" to get started.</p>
+      <button class="btn-primary" onclick="openNewRequestModal()">Make a Request</button>
+    </div>
+  </div>
+</main>
+
+<!-- New Request Modal -->
+<div class="modal-overlay" id="new-request-modal">
+  <div class="modal">
+    <h2>📋 New Service Request</h2>
+    <div class="form-group">
+      <label>Service Category</label>
+      <select id="req-category">
+        <option value="">Select category</option>
+        <option>Home & Repair</option>
+        <option>Plumbing</option>
+        <option>Electrical</option>
+        <option>Automotive / Mechanic</option>
+        <option>Cleaning & Maintenance</option>
+        <option>Beauty & Fashion</option>
+        <option>Technical Services</option>
+        <option>Food & Events</option>
+        <option>Logistics & Transport</option>
+        <option>Property & Real Estate</option>
+        <option>Professional Services</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Describe what you need</label>
+      <textarea id="req-description" placeholder="Be specific about what you need done..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Your Location in PHC</label>
+      <select id="req-location">
+        <option value="">Select area</option>
+        <option>GRA</option>
+        <option>Trans-Amadi</option>
+        <option>Rumuola</option>
+        <option>D-Line</option>
+        <option>Woji</option>
+        <option>Rumuibekwe</option>
+        <option>Eliozu</option>
+        <option>Mgbuoba</option>
+        <option>Peter Odili</option>
+        <option>Rumuokoro</option>
+        <option>UNIPORT Area</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Additional Message (optional)</label>
+      <textarea id="req-message" placeholder="Any extra details..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="submitRequest()">Submit Request</button>
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, addDoc, query, where, onSnapshot, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCckKrwsUd9oyHh_w5E06S5fVYCgEDhHeA",
+    authDomain: "stanmo-connect.firebaseapp.com",
+    projectId: "stanmo-connect",
+    storageBucket: "stanmo-connect.firebasestorage.app",
+    messagingSenderId: "1030645380559",
+    appId: "1:1030645380559:web:8b1385e0b6f2d90badceba"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let currentUser = null;
+  let userData = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUser = user;
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists() || snap.data().role !== 'requester') { window.location.href = 'login.html'; return; }
+    userData = snap.data();
+    document.getElementById('nav-name').textContent = userData.fullname;
+    document.getElementById('welcome-title').textContent = `Welcome back, ${userData.fullname.split(' ')[0]} 👋`;
+    loadJobs();
+  });
+
+  function loadJobs() {
+    const q = query(collection(db, 'jobs'), where('requesterId', '==', currentUser.uid));
+    onSnapshot(q, (snap) => {
+      const jobs = [];
+      snap.forEach(d => jobs.push({ id: d.id, ...d.data() }));
+      jobs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+      document.getElementById('stat-total').textContent = jobs.length;
+      document.getElementById('stat-active').textContent = jobs.filter(j => j.status === 'active').length;
+      document.getElementById('stat-completed').textContent = jobs.filter(j => j.status === 'completed').length;
+
+      renderJobs(jobs);
+    });
+  }
+
+  function renderJobs(jobs) {
+    const container = document.getElementById('jobs-container');
+    if (jobs.length === 0) {
+      container.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>No requests yet.</p><button class="btn-primary" onclick="openNewRequestModal()">Make a Request</button></div>`;
+      return;
+    }
+
+    container.innerHTML = jobs.map(job => {
+      const badgeMap = { pending: 'badge-pending', quoted: 'badge-quoted', active: 'badge-active', completed: 'badge-completed' };
+      const labelMap = { pending: 'Pending', quoted: 'Quote Received', active: 'In Progress', completed: 'Completed' };
+
+      let quoteHtml = '';
+      if (job.status === 'quoted' && job.quoteAmount) {
+        const commission = Math.round(job.quoteAmount * 0.1);
+        const total = job.quoteAmount + commission;
+        quoteHtml = `
+          <div class="quote-box">
+            <div class="quote-label">💬 Quote from Provider</div>
+            <div class="quote-amount">₦${job.quoteAmount.toLocaleString()}</div>
+            <div class="quote-note">Total to pay: ₦${total.toLocaleString()} (includes 10% platform fee)</div>
+            ${job.quoteNote ? `<div class="quote-note" style="margin-top:0.3rem">${job.quoteNote}</div>` : ''}
+          </div>`;
+      }
+
+      let actionsHtml = '';
+      if (job.status === 'quoted') {
+        actionsHtml = `<div class="job-actions">
+          <button class="btn-pay" onclick="payForJob('${job.id}', ${job.quoteAmount})">Pay ₦${Math.round((job.quoteAmount || 0) * 1.1).toLocaleString()} →</button>
+          <button class="btn-outline" onclick="declineQuote('${job.id}')">Decline</button>
+        </div>`;
+      }
+      if (job.status === 'active') {
+        actionsHtml = `<div class="job-actions">
+          <button class="btn-confirm" onclick="confirmComplete('${job.id}')">✅ Confirm Job Completed</button>
+        </div>`;
+      }
+
+      return `
+        <div class="job-card">
+          <div class="job-header">
+            <span class="job-title">${job.category}</span>
+            <span class="badge ${badgeMap[job.status] || 'badge-pending'}">${labelMap[job.status] || 'Pending'}</span>
+          </div>
+          <div class="job-meta">
+            <span>📍 ${job.location}</span>
+            <span>📅 ${job.createdAt ? new Date(job.createdAt.seconds * 1000).toLocaleDateString() : 'Just now'}</span>
+          </div>
+          <div style="font-size:0.88rem;color:var(--muted)">${job.description}</div>
+          ${quoteHtml}
+          ${actionsHtml}
+        </div>`;
+    }).join('');
+  }
+
+  window.openNewRequestModal = () => { document.getElementById('new-request-modal').classList.add('open'); };
+  window.closeModal = () => { document.getElementById('new-request-modal').classList.remove('open'); };
+
+  window.submitRequest = async () => {
+    const category = document.getElementById('req-category').value;
+    const description = document.getElementById('req-description').value.trim();
+    const location = document.getElementById('req-location').value;
+    const message = document.getElementById('req-message').value.trim();
+
+    if (!category || !description || !location) { alert('Please fill in all required fields.'); return; }
+
+    try {
+      await addDoc(collection(db, 'jobs'), {
+        requesterId: currentUser.uid,
+        requesterName: userData.fullname,
+        requesterPhone: userData.phone,
+        category,
+        description,
+        location,
+        message,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+        quoteAmount: null,
+        quoteNote: null,
+        providerId: null,
+        providerName: null,
+        requesterConfirmed: false,
+        providerConfirmed: false
+      });
+      closeModal();
+      document.getElementById('req-category').value = '';
+      document.getElementById('req-description').value = '';
+      document.getElementById('req-location').value = '';
+      document.getElementById('req-message').value = '';
+    } catch (e) { alert('Error submitting request. Please try again.'); }
+  };
+
+  window.payForJob = async (jobId, amount) => {
+    // Paystack integration placeholder
+    alert(`Paystack payment for ₦${Math.round(amount * 1.1).toLocaleString()} will be integrated here.\n\nAfter payment, the job will be marked as active and the provider will be notified.`);
+    // TODO: Integrate Paystack here
+    // After successful payment:
+    // await updateDoc(doc(db, 'jobs', jobId), { status: 'active', paidAt: serverTimestamp() });
+  };
+
+  window.declineQuote = async (jobId) => {
+    if (confirm('Are you sure you want to decline this quote?')) {
+      await updateDoc(doc(db, 'jobs', jobId), { status: 'pending', quoteAmount: null, quoteNote: null, providerId: null });
+    }
+  };
+
+  window.confirmComplete = async (jobId) => {
+    if (confirm('Confirm that this job has been completed satisfactorily?')) {
+      await updateDoc(doc(db, 'jobs', jobId), { requesterConfirmed: true });
+      // Check if provider also confirmed
+      const jobSnap = await getDoc(doc(db, 'jobs', jobId));
+      const jobData = jobSnap.data();
+      if (jobData.providerConfirmed) {
+        const commission = Math.round(jobData.quoteAmount * 0.1);
+        await updateDoc(doc(db, 'jobs', jobId), {
+          status: 'completed',
+          completedAt: serverTimestamp(),
+          commission
+        });
+      }
+    }
+  };
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    signOut(auth).then(() => window.location.href = 'login.html');
+  });
+</script>
+</body>
+</html>
