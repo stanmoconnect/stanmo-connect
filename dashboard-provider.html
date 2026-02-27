@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Provider Dashboard — Stanmo Connect</title>
+  <title>Provider Dashboard — Stanmo Connect</title> <script src="https://js.paystack.co/v1/inline.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -411,11 +411,32 @@
       }
     }
   };
-
-  window.paySubscription = () => {
-    alert('Paystack subscription payment for ₦3,000/month will be integrated here.');
-    // TODO: Integrate Paystack subscription
+  
+window.paySubscription = () => {
+    const handler = PaystackPop.setup({
+      key: 'pk_live_915771bbbdc9665d2cb16e79e1d775acc1060711',
+      email: userData.email,
+      amount: 300000,
+      currency: 'NGN',
+      ref: 'SC_SUB_' + currentUser.uid + '_' + Date.now(),
+      callback: async function(response) {
+        const expiry = new Date();
+        expiry.setMonth(expiry.getMonth() + 1);
+        await updateDoc(doc(db, 'users', currentUser.uid), {
+          subscriptionActive: true,
+          subscriptionExpiry: expiry,
+          profileVisible: true,
+          lastPaymentRef: response.reference,
+          lastPaymentDate: new Date()
+        });
+        alert('✅ Subscription activated! Your profile is now live.');
+        window.location.reload();
+      },
+      onClose: function() {}
+    });
+    handler.openIframe();
   };
+  
 
   document.getElementById('logout-btn').addEventListener('click', () => {
     signOut(auth).then(() => window.location.href = 'login.html');
