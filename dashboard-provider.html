@@ -280,7 +280,7 @@
       const expiry = userData.subscriptionExpiry ? new Date(userData.subscriptionExpiry.seconds * 1000).toLocaleDateString() : 'Active';
       subContainer.innerHTML = `<div class="sub-alert active"><div class="sub-alert-text"><strong>✅ Subscription Active</strong>Your profile is visible to requesters. Renews on ${expiry}</div></div>`;
     } else {
-      subContainer.innerHTML = `<div class="sub-alert"><div class="sub-alert-text"><strong>⚠️ Subscription Inactive</strong>Your profile is hidden. Pay ₦3,000/month to activate.</div><button class="btn-renew" onclick="paySubscription()">Pay ₦3,000</button></div>`;
+      subContainer.innerHTML = `<div class="sub-alert"><div class="sub-alert-text"><strong>⚠️ Subscription Inactive</strong>Your profile is hidden. Pay ₦3,000/month to activate.</div><button class="btn-renew" onclick="window.location.href='payment.html'">Pay ₦3,000</button></div>`;
     }
 
     loadJobs();
