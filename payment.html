@@ -4,256 +4,81 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Activate Your Account — Stanmo Connect</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script src="https://js.paystack.co/v1/inline.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --orange: #F47B20;
-      --dark: #0d1117;
-      --card: #161b22;
-      --border: #30363d;
-      --text: #e6edf3;
-      --muted: #8b949e;
-      --green: #3fb950;
-    }
-    body {
-      background: var(--dark);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.5rem;
-      color: var(--orange);
-      text-decoration: none;
-      margin-bottom: 2rem;
-      display: block;
-      text-align: center;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2.5rem 2rem;
-      width: 100%;
-      max-width: 480px;
-    }
-    .plan-badge {
-      display: inline-block;
-      background: rgba(244,123,32,0.15);
-      color: var(--orange);
-      border-radius: 8px;
-      padding: 0.3rem 0.8rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
+    :root { --orange: #F47B20; --dark: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --green: #3fb950; }
+    body { background: var(--dark); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem 1rem; }
+    .logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--orange); text-decoration: none; margin-bottom: 2rem; display: block; text-align: center; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem 2rem; width: 100%; max-width: 480px; }
+    .plan-badge { display: inline-block; background: rgba(244,123,32,0.15); color: var(--orange); border-radius: 8px; padding: 0.3rem 0.8rem; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; }
+    h1 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
     .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
-
-    .price-box {
-      background: rgba(244,123,32,0.06);
-      border: 1px solid rgba(244,123,32,0.2);
-      border-radius: 12px;
-      padding: 1.5rem;
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-    .price-amount {
-      font-family: 'Syne', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--orange);
-    }
+    .price-box { background: rgba(244,123,32,0.06); border: 1px solid rgba(244,123,32,0.2); border-radius: 12px; padding: 1.5rem; text-align: center; margin-bottom: 2rem; }
+    .price-amount { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--orange); }
     .price-period { color: var(--muted); font-size: 0.9rem; margin-top: 0.25rem; }
-
     .features { margin-bottom: 2rem; }
-    .feature {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
+    .feature { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
     .feature:last-child { border-bottom: none; }
-    .feature .icon { color: var(--green); font-size: 1rem; flex-shrink: 0; }
-
-    /* Agreement box */
-    .agreement-box {
-      background: rgba(56,139,253,0.06);
-      border: 1px solid rgba(56,139,253,0.2);
-      border-radius: 10px;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.83rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .agreement-box strong { color: var(--text); display: block; margin-bottom: 0.5rem; font-size: 0.88rem; }
-    .agreement-box .highlight { color: var(--orange); font-weight: 600; }
-
-    .agree-check {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-      cursor: pointer;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .agree-check input { margin-top: 2px; accent-color: var(--orange); width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
-
-    .btn-pay {
-      width: 100%;
-      background: var(--orange);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 1rem;
-      font-size: 1rem;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .btn-pay:hover { opacity: 0.9; }
+    .agreement-box { background: rgba(56,139,253,0.06); border: 1px solid rgba(56,139,253,0.2); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+    .agreement-box strong { color: var(--text); display: block; margin-bottom: 0.5rem; }
+    .highlight { color: var(--orange); font-weight: 600; }
+    .agree-check { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+    .agree-check input { margin-top: 2px; accent-color: var(--orange); width: 16px; height: 16px; flex-shrink: 0; }
+    .btn-pay { width: 100%; background: var(--orange); color: #fff; border: none; border-radius: 10px; padding: 1rem; font-size: 1rem; font-weight: 700; font-family: 'Syne', sans-serif; cursor: pointer; }
     .btn-pay:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .secure-note {
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 1rem;
-    }
-
-    /* Success screen */
-    .success-screen {
-      display: none;
-      text-align: center;
-      padding: 1rem 0;
-    }
-    .success-screen .success-icon {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      animation: pop 0.4s ease;
-    }
-    @keyframes pop {
-      0% { transform: scale(0); }
-      80% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-    .success-screen h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 0.75rem;
-      color: var(--green);
-    }
+    .secure-note { text-align: center; font-size: 0.78rem; color: var(--muted); margin-top: 1rem; }
+    .success-screen { display: none; text-align: center; padding: 1rem 0; }
+    .success-screen h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--green); }
     .success-screen p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6; }
-    .commission-notice {
-      background: rgba(244,123,32,0.08);
-      border: 1px solid rgba(244,123,32,0.25);
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      font-size: 0.85rem;
-      color: var(--text);
-      margin-bottom: 1.5rem;
-      line-height: 1.6;
-      text-align: left;
-    }
+    .commission-notice { background: rgba(244,123,32,0.08); border: 1px solid rgba(244,123,32,0.25); border-radius: 10px; padding: 1rem 1.25rem; font-size: 0.85rem; color: var(--text); margin-bottom: 1.5rem; line-height: 1.6; text-align: left; }
     .commission-notice strong { color: var(--orange); }
-    .btn-dashboard {
-      width: 100%;
-      background: var(--green);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      padding: 1rem;
-      font-size: 1rem;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-      cursor: pointer;
-      text-decoration: none;
-      display: block;
-      text-align: center;
-    }
+    .btn-dashboard { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 10px; padding: 1rem; font-size: 1rem; font-weight: 700; font-family: 'Syne', sans-serif; cursor: pointer; text-decoration: none; display: block; text-align: center; }
+    .loading { text-align: center; color: var(--muted); padding: 2rem; }
   </style>
 </head>
 <body>
-
   <a class="logo" href="index.html">SC STANMO CONNECT</a>
-
   <div class="card">
-
-    <!-- Payment Screen -->
-    <div id="payment-screen">
+    <div class="loading" id="loading-screen">Loading your account...</div>
+    <div id="payment-screen" style="display:none">
       <div class="plan-badge">Provider Plan</div>
       <h1>Activate Your Profile</h1>
       <p class="subtitle">Pay your monthly subscription to go live on Stanmo Connect.</p>
-
       <div class="price-box">
         <div class="price-amount">₦3,000</div>
         <div class="price-period">per month · cancel anytime</div>
       </div>
-
       <div class="features">
-        <div class="feature"><span class="icon">✅</span> Your profile listed on Stanmo Connect</div>
-        <div class="feature"><span class="icon">✅</span> Receive job requests from verified clients</div>
-        <div class="feature"><span class="icon">✅</span> Verified badge on your profile</div>
-        <div class="feature"><span class="icon">✅</span> Access to your provider dashboard</div>
-        <div class="feature"><span class="icon">✅</span> Real-time job notifications</div>
-        <div class="feature"><span class="icon">✅</span> Ratings and reviews system</div>
+        <div class="feature"><span style="color:var(--green)">✅</span> Your profile listed on Stanmo Connect</div>
+        <div class="feature"><span style="color:var(--green)">✅</span> Receive job requests from verified clients</div>
+        <div class="feature"><span style="color:var(--green)">✅</span> Verified badge on your profile</div>
+        <div class="feature"><span style="color:var(--green)">✅</span> Access to your provider dashboard</div>
+        <div class="feature"><span style="color:var(--green)">✅</span> Real-time job notifications</div>
+        <div class="feature"><span style="color:var(--green)">✅</span> Ratings and reviews system</div>
       </div>
-
       <div class="agreement-box">
         <strong>📋 Commission Agreement</strong>
-        By activating your account you agree that <span class="highlight">Stanmo Connect will deduct 10% commission</span> from every job completed through the platform. This commission covers platform maintenance, client acquisition, and payment processing. The remaining <span class="highlight">90% is paid directly to you</span> after job completion is confirmed by both parties.
+        By activating your account you agree that <span class="highlight">Stanmo Connect will deduct 10% commission</span> from every job completed. The remaining <span class="highlight">90% is paid directly to you</span> after job completion is confirmed by both parties.
       </div>
-
       <label class="agree-check">
-        <input type="checkbox" id="agree-checkbox" onchange="togglePayBtn()" />
-        I have read and agree to the commission terms. I understand that 10% of every completed job will go to Stanmo Connect.
+        <input type="checkbox" id="agree-checkbox" />
+        I agree to the commission terms. 10% of every completed job goes to Stanmo Connect.
       </label>
-
-      <button class="btn-pay" id="pay-btn" onclick="payWithPaystack()" disabled>
-        🔒 Pay ₦3,000 to Activate
-      </button>
-
+      <button class="btn-pay" id="pay-btn" disabled>🔒 Pay ₦3,000 to Activate</button>
       <p class="secure-note">🔒 Secured by Paystack · Card, Bank Transfer & USSD accepted</p>
     </div>
-
-    <!-- Success Screen -->
     <div class="success-screen" id="success-screen">
-      <div class="success-icon">🎉</div>
+      <div style="font-size:4rem;margin-bottom:1rem">🎉</div>
       <h2>You're Live on Stanmo Connect!</h2>
-      <p>Your subscription is active and your profile is now visible to service requesters across Port Harcourt.</p>
+      <p>Your subscription is active and your profile is now visible to requesters across Port Harcourt.</p>
       <div class="commission-notice">
         <strong>⚡ Important Reminder</strong><br/>
-        Stanmo Connect charges a <strong>10% commission</strong> on every job you complete through the platform. This is automatically deducted when payment is released. Your <strong>90% earnings</strong> will be sent to you after both parties confirm job completion.
+        Stanmo Connect charges a <strong>10% commission</strong> on every completed job. Your <strong>90% earnings</strong> are sent after both parties confirm completion.
       </div>
       <a href="dashboard-provider.html" class="btn-dashboard">Go to My Dashboard →</a>
     </div>
-
   </div>
 
 <script type="module">
@@ -261,79 +86,59 @@
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
+  const app = initializeApp({
     apiKey: "AIzaSyCckKrwsUd9oyHh_w5E06S5fVYCgEDhHeA",
     authDomain: "stanmo-connect.firebaseapp.com",
     projectId: "stanmo-connect",
     storageBucket: "stanmo-connect.firebasestorage.app",
     messagingSenderId: "1030645380559",
     appId: "1:1030645380559:web:8b1385e0b6f2d90badceba"
-  };
+  });
 
-  const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let currentUser = null;
-  let userData = null;
-
   onAuthStateChanged(auth, async (user) => {
     if (!user) { window.location.href = 'login.html'; return; }
-    currentUser = user;
     const snap = await getDoc(doc(db, 'users', user.uid));
     if (!snap.exists()) { window.location.href = 'login.html'; return; }
-    userData = snap.data();
-
-    // If already subscribed go straight to dashboard
+    const userData = snap.data();
     if (userData.subscriptionActive && userData.role === 'provider') {
-      window.location.href = 'dashboard-provider.html';
+      window.location.href = 'dashboard-provider.html'; return;
     }
-  });
 
-  window.togglePayBtn = function() {
-    const checked = document.getElementById('agree-checkbox').checked;
-    document.getElementById('pay-btn').disabled = !checked;
-  };
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('payment-screen').style.display = 'block';
 
-  window.payWithPaystack = function() {
-    if (!currentUser || !userData) { alert('Please log in first.'); return; }
-
-    const handler = PaystackPop.setup({
-      key: 'pk_live_915771bbbdc9665d2cb16e79e1d775acc1060711',
-      email: userData.email,
-      amount: 300000, // ₦3,000 in kobo
-      currency: 'NGN',
-      ref: 'SC_SUB_' + currentUser.uid + '_' + Date.now(),
-      metadata: {
-        custom_fields: [
-          { display_name: 'Provider Name', variable_name: 'provider_name', value: userData.fullname },
-          { display_name: 'User ID', variable_name: 'user_id', value: currentUser.uid }
-        ]
-      },
-      callback: async function(response) {
-        // Payment successful
-        const expiry = new Date();
-        expiry.setMonth(expiry.getMonth() + 1);
-
-        await updateDoc(doc(db, 'users', currentUser.uid), {
-          subscriptionActive: true,
-          subscriptionExpiry: expiry,
-          profileVisible: true,
-          lastPaymentRef: response.reference,
-          lastPaymentDate: new Date()
-        });
-
-        // Show success screen
-        document.getElementById('payment-screen').style.display = 'none';
-        document.getElementById('success-screen').style.display = 'block';
-      },
-      onClose: function() {
-        // Payment cancelled
-      }
+    document.getElementById('agree-checkbox').addEventListener('change', function() {
+      document.getElementById('pay-btn').disabled = !this.checked;
     });
 
-    handler.openIframe();
-  };
+    document.getElementById('pay-btn').addEventListener('click', function() {
+      const handler = PaystackPop.setup({
+        key: 'pk_live_915771bbbdc9665d2cb16e79e1d775acc1060711',
+        email: userData.email,
+        amount: 300000,
+        currency: 'NGN',
+        ref: 'SC_SUB_' + user.uid + '_' + Date.now(),
+        callback: async function(response) {
+          const expiry = new Date();
+          expiry.setMonth(expiry.getMonth() + 1);
+          await updateDoc(doc(db, 'users', user.uid), {
+            subscriptionActive: true,
+            subscriptionExpiry: expiry,
+            profileVisible: true,
+            lastPaymentRef: response.reference,
+            lastPaymentDate: new Date()
+          });
+          document.getElementById('payment-screen').style.display = 'none';
+          document.getElementById('success-screen').style.display = 'block';
+        },
+        onClose: function() {}
+      });
+      handler.openIframe();
+    });
+  });
 </script>
 </body>
 </html>
