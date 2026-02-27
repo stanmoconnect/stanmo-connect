@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Provider Dashboard — Stanmo Connect</title> <script src="https://js.paystack.co/v1/inline.js"></script>
+  <title>Provider Dashboard — Stanmo Connect</title>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -411,8 +412,10 @@
       }
     }
   };
-  
-window.paySubscription = () => {
+
+  window.paySubscription = () => {
+    if (!currentUser || !userData) { alert('Please log in first.'); return; }
+    if (typeof PaystackPop === 'undefined') { alert('Payment system not loaded. Please refresh the page and try again.'); return; }
     const handler = PaystackPop.setup({
       key: 'pk_live_915771bbbdc9665d2cb16e79e1d775acc1060711',
       email: userData.email,
@@ -436,11 +439,10 @@ window.paySubscription = () => {
     });
     handler.openIframe();
   };
-  
 
   document.getElementById('logout-btn').addEventListener('click', () => {
     signOut(auth).then(() => window.location.href = 'login.html');
   });
 </script>
 </body>
-</html>
+        </html>
