@@ -1173,4 +1173,275 @@ document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 renderProviders(providers);
 </script>
 </body>
+</html> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chatbot Widget</title>
+</head>
+<body>
+
+<!-- ============================================================
+STANMO CONNECT AI CHATBOT WIDGET
+Add this entire <style> and <div> block to your index.html
+just before the closing </body> tag
+============================================================ -->
+
+<style>
+/* Chatbot Widget */
+.sc-chat-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  background: #F47B20;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(244,123,32,0.4);
+  z-index: 9999;
+  border: none;
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+.sc-chat-btn:hover { transform: scale(1.1); }
+
+.sc-chat-window {
+  position: fixed;
+  bottom: 96px;
+  right: 24px;
+  width: 340px;
+  max-width: calc(100vw - 48px);
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  z-index: 9998;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+}
+.sc-chat-window.open { display: flex; }
+
+.sc-chat-header {
+  background: #F47B20;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sc-chat-header .avatar {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+.sc-chat-header .info { flex: 1; }
+.sc-chat-header .name { font-family: 'Syne', sans-serif; font-weight: 700; color: #fff; font-size: 0.9rem; }
+.sc-chat-header .status { font-size: 0.72rem; color: rgba(255,255,255,0.8); }
+.sc-chat-close { background: none; border: none; color: #fff; cursor: pointer; font-size: 1.2rem; padding: 0; }
+
+.sc-chat-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sc-msg {
+  max-width: 85%;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.sc-msg.bot {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  color: #e6edf3;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.sc-msg.user {
+  background: #F47B20;
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.sc-msg.typing { color: #8b949e; font-style: italic; }
+
+.sc-chat-input-area {
+  padding: 0.75rem;
+  border-top: 1px solid #30363d;
+  display: flex;
+  gap: 0.5rem;
+}
+.sc-chat-input {
+  flex: 1;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  color: #e6edf3;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+.sc-chat-input:focus { border-color: #F47B20; }
+.sc-send-btn {
+  background: #F47B20;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sc-quick-replies {
+  padding: 0 0.75rem 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.sc-quick-btn {
+  background: rgba(244,123,32,0.1);
+  border: 1px solid rgba(244,123,32,0.3);
+  color: #F47B20;
+  border-radius: 20px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+</style>
+
+<!-- Chatbot Button -->
+<button class="sc-chat-btn" onclick="toggleChat()" id="sc-chat-btn">💬</button>
+
+<!-- Chatbot Window -->
+<div class="sc-chat-window" id="sc-chat-window">
+  <div class="sc-chat-header">
+    <div class="avatar">🤖</div>
+    <div class="info">
+      <div class="name">Stanmo Assistant</div>
+      <div class="status">🟢 Online — replies instantly</div>
+    </div>
+    <button class="sc-chat-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="sc-chat-messages" id="sc-messages">
+    <div class="sc-msg bot">
+      Hi! 👋 Welcome to Stanmo Connect. I'm your AI assistant. How can I help you today?
+    </div>
+  </div>
+
+  <div class="sc-quick-replies" id="sc-quick-replies">
+    <button class="sc-quick-btn" onclick="sendQuick('How do I find a service provider?')">Find a provider</button>
+    <button class="sc-quick-btn" onclick="sendQuick('How do I become a provider?')">Become a provider</button>
+    <button class="sc-quick-btn" onclick="sendQuick('How does payment work?')">How payment works</button>
+    <button class="sc-quick-btn" onclick="sendQuick('I have a complaint')">Make a complaint</button>
+  </div>
+
+  <div class="sc-chat-input-area">
+    <input type="text" class="sc-chat-input" id="sc-input" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendMessage()" />
+    <button class="sc-send-btn" onclick="sendMessage()">➤</button>
+  </div>
+</div>
+
+<script>
+  // IMPORTANT: Replace this URL with your Render server URL after deployment
+  const SERVER_URL = 'https://stanmo-connect-server.onrender.com';
+
+  let chatHistory = [];
+  let chatOpen = false;
+
+  function toggleChat() {
+    chatOpen = !chatOpen;
+    const win = document.getElementById('sc-chat-window');
+    const btn = document.getElementById('sc-chat-btn');
+    win.classList.toggle('open', chatOpen);
+    btn.textContent = chatOpen ? '✕' : '💬';
+  }
+
+  function sendQuick(text) {
+    document.getElementById('sc-quick-replies').style.display = 'none';
+    addMessage(text, 'user');
+    getBotReply(text);
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('sc-input');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    document.getElementById('sc-quick-replies').style.display = 'none';
+    addMessage(text, 'user');
+    getBotReply(text);
+  }
+
+  function addMessage(text, type) {
+    const messages = document.getElementById('sc-messages');
+    const msg = document.createElement('div');
+    msg.className = 'sc-msg ' + type;
+    msg.textContent = text;
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+    if (type === 'user') {
+      chatHistory.push({ role: 'user', content: text });
+    }
+  }
+
+  function addTyping() {
+    const messages = document.getElementById('sc-messages');
+    const msg = document.createElement('div');
+    msg.className = 'sc-msg bot typing';
+    msg.id = 'sc-typing';
+    msg.textContent = 'Typing...';
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function removeTyping() {
+    const typing = document.getElementById('sc-typing');
+    if (typing) typing.remove();
+  }
+
+  async function getBotReply(userMessage) {
+    addTyping();
+    try {
+      const response = await fetch(SERVER_URL + '/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage, history: chatHistory.slice(-6) })
+      });
+      const data = await response.json();
+      removeTyping();
+      addMessage(data.reply, 'bot');
+      chatHistory.push({ role: 'assistant', content: data.reply });
+    } catch (err) {
+      removeTyping();
+      addMessage('Sorry, I am having a little issue. Please WhatsApp us on 09161036705! 😊', 'bot');
+    }
+  }
+</script>
+
+</body>
 </html>
