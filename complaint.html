@@ -20,11 +20,12 @@
     select option { background: var(--dark); }
     textarea { resize: vertical; min-height: 100px; }
     .btn { width: 100%; background: var(--orange); color: #fff; border: none; border-radius: 10px; padding: 0.9rem; font-size: 1rem; font-weight: 600; font-family: 'Syne', sans-serif; cursor: pointer; margin-top: 0.5rem; }
-    .success-box { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); border-radius: 10px; padding: 1.25rem; display: none; }
-    .success-box h3 { color: var(--green); font-family: 'Syne', sans-serif; margin-bottom: 0.5rem; }
+    .success-box { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); border-radius: 10px; padding: 1.25rem; display: none; text-align: center; }
+    .success-box h3 { color: var(--green); font-family: 'Syne', sans-serif; margin-bottom: 0.5rem; font-size: 1.2rem; }
     .success-box p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; }
     .back-link { text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--muted); }
     .back-link a { color: var(--orange); text-decoration: none; }
+    .whatsapp-alt { display: block; text-align: center; margin-top: 1.5rem; padding: 0.8rem; background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.3); border-radius: 10px; color: #25D366; text-decoration: none; font-size: 0.88rem; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -34,8 +35,8 @@
     <p class="subtitle">We take all complaints seriously and respond within 24 hours.</p>
 
     <div class="success-box" id="success-box">
-      <h3>✅ Complaint Received!</h3>
-      <p id="auto-response-text">Your complaint has been logged and our team will respond shortly.</p>
+      <h3>✅ Complaint Sent!</h3>
+      <p>Your complaint has been sent to our team. We will respond to your email within 24 hours. Thank you for helping us improve Stanmo Connect.</p>
     </div>
 
     <form id="complaint-form">
@@ -55,55 +56,51 @@
         <label>Complaint Type</label>
         <select id="c-type" required>
           <option value="">Select type</option>
-          <option value="payment">Payment Issue</option>
-          <option value="provider">Provider Complaint</option>
-          <option value="job">Job Dispute</option>
-          <option value="other">Other</option>
+          <option value="Payment Issue">Payment Issue</option>
+          <option value="Provider Complaint">Provider Complaint</option>
+          <option value="Job Dispute">Job Dispute</option>
+          <option value="Other">Other</option>
         </select>
       </div>
       <div class="form-group">
         <label>Describe Your Complaint</label>
         <textarea id="c-message" placeholder="Tell us exactly what happened..." required></textarea>
       </div>
-      <button type="submit" class="btn" id="submit-btn">Submit Complaint</button>
+      <button type="submit" class="btn">Submit Complaint</button>
     </form>
+
+    <a href="https://wa.me/2349161036705?text=Hello%20Stanmo%20Connect%2C%20I%20have%20a%20complaint%20I%20would%20like%20to%20report." class="whatsapp-alt" target="_blank">
+      💬 Or send directly on WhatsApp
+    </a>
 
     <div class="back-link"><a href="index.html">← Back to Home</a></div>
   </div>
 
 <script>
-  const SERVER_URL = 'https://stanmo-connect-server.onrender.com';
-
-  document.getElementById('complaint-form').addEventListener('submit', async (e) => {
+  document.getElementById('complaint-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    btn.textContent = 'Submitting...';
-    btn.disabled = true;
 
-    const data = {
-      name: document.getElementById('c-name').value,
-      email: document.getElementById('c-email').value,
-      phone: document.getElementById('c-phone').value,
-      type: document.getElementById('c-type').value,
-      message: document.getElementById('c-message').value
-    };
+    const name = document.getElementById('c-name').value;
+    const email = document.getElementById('c-email').value;
+    const phone = document.getElementById('c-phone').value;
+    const type = document.getElementById('c-type').value;
+    const message = document.getElementById('c-message').value;
 
-    try {
-      const res = await fetch(SERVER_URL + '/complaint', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      const result = await res.json();
+    // Send via mailto (opens email app with complaint pre-filled)
+    const subject = encodeURIComponent('Stanmo Connect Complaint: ' + type);
+    const body = encodeURIComponent(
+      'Name: ' + name + '\n' +
+      'Email: ' + email + '\n' +
+      'Phone: ' + phone + '\n' +
+      'Type: ' + type + '\n\n' +
+      'Message:\n' + message
+    );
 
-      document.getElementById('complaint-form').style.display = 'none';
-      document.getElementById('auto-response-text').textContent = result.autoResponse;
-      document.getElementById('success-box').style.display = 'block';
-    } catch(err) {
-      btn.textContent = 'Submit Complaint';
-      btn.disabled = false;
-      alert('Error submitting complaint. Please WhatsApp us on 09161036705');
-    }
+    window.location.href = 'mailto:stanmoconnect@gmail.com?subject=' + subject + '&body=' + body;
+
+    // Show success
+    document.getElementById('complaint-form').style.display = 'none';
+    document.getElementById('success-box').style.display = 'block';
   });
 </script>
 </body>
